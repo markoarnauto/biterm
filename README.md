@@ -1,6 +1,6 @@
 # Biterm Topic Model
 
-This is a simple Cython implenentaion of the awesome
+This is a simple Python implementation of the awesome
 [Biterm Topic Model](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.402.4032&rep=rep1&type=pdf).
 This model is accurate in short text classification.
 It explicitly models the word co-occurrence patterns in the whole corpus to solve the problem of sparse word co-occurrence at document-level.
@@ -42,11 +42,11 @@ Save a topic plot using pyLDAvis and explore the results! (also see *simple_btml
 ```
 
 Inference is done with Gibbs Sampling and it's not really fast. The implementation is not meant for production.
-But if you have to classify a lot of texts you can try using online learning. Also use the Cython version.
+But if you have to classify a lot of texts you can try using online learning. Use the Cython version to speed up performance a bit.
 ```python
 import numpy as np
 import pyLDAvis
-from biterm.btm import oBTM 
+from biterm.cbtm import oBTM 
 from sklearn.feature_extraction.text import CountVectorizer
 from biterm.utility import vec_to_biterms, topic_summuary # helper functions
 
