@@ -40,6 +40,7 @@ Save a topic plot using pyLDAvis and explore the results! (also see *simple_btml
     btm = oBTM(num_topics=20, V=vocab)
     topics = btm.fit_transform(biterms, iterations=100)
 ```
+![pyLDAvis Visualization](https://github.com/markoarnauto/biterm/blob/master/vis/simple_btm.png)
 
 Inference is done with Gibbs Sampling and it's not really fast. The implementation is not meant for production.
 But if you have to classify a lot of texts you can try using online learning. Use the Cython version to speed up performance a bit.
