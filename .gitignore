@@ -1,0 +1,6 @@
+build
+biterm.egg-info
+dist
+.DS_Store
+biterm/__pycache__
+.idea
