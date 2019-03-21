@@ -43,17 +43,17 @@ Save a topic plot using pyLDAvis and explore the results! (also see *simple_btml
 ![pyLDAvis Visualization](https://github.com/markoarnauto/biterm/blob/master/vis/simple_btm.png)
 
 Inference is done with Gibbs Sampling and it's not really fast. The implementation is not meant for production.
-But if you have to classify a lot of texts you can try using online learning. Use the Cython version to speed up performance a bit.
+But if you have to classify a lot of texts you can try using online learning. 
 ```python
 import numpy as np
 import pyLDAvis
-from biterm.cbtm import oBTM 
+from biterm.btm import oBTM 
 from sklearn.feature_extraction.text import CountVectorizer
 from biterm.utility import vec_to_biterms, topic_summuary # helper functions
 
 if __name__ == "__main__":
 
-    texts = open('./data/reuters.titles').read().splitlines()
+    texts = open('./data/reuters.titles').read().splitlines() # path of data file
 
     # vectorize texts
     vec = CountVectorizer(stop_words='english')
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     print("\n\n Visualize Topics ..")
     vis = pyLDAvis.prepare(btm.phi_wz.T, topics, np.count_nonzero(X, axis=1), vocab, np.sum(X, axis=0))
-    pyLDAvis.save_html(vis, './vis/online_btm.html')
+    pyLDAvis.save_html(vis, './vis/online_btm.html')  # path to output
 
     print("\n\n Topic coherence ..")
     topic_summuary(btm.phi_wz.T, X, vocab, 10)
@@ -85,3 +85,5 @@ if __name__ == "__main__":
     for i in range(len(texts)):
         print("{} (topic: {})".format(texts[i], topics[i].argmax()))
 ```
+Use the Cython version to speed up performance. Therefore, you can download the repo and build the cbtm.pyx for the operating system of your choice.
+Afterwards use `from biterm.cbtm import oBTM` to use the cythonic version.

@@ -3,4 +3,6 @@ biterm.egg-info
 dist
 .DS_Store
 biterm/__pycache__
+biterm/cbtm.c
+biterm/cbtm.cpython-36m-darwin.so
 .idea

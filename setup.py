@@ -1,15 +1,16 @@
-from setuptools import setup, find_packages
-from setuptools.extension import Extension
-from Cython.Build import cythonize
-import numpy
+from setuptools import setup, find_packages, dist
+#dist.Distribution().fetch_build_eggs(['Cython>=0.15.1', 'numpy>=1.10'])
+#from setuptools.extension import Extension
+#from Cython.Build import cythonize
+#import numpy
 
-extensions = [
-    Extension(
-        "biterm.cbtm",
-        ["biterm/cbtm.pyx","biterm/cbtm.c"],
-        include_dirs=[numpy.get_include()]
-    )
-]
+# extensions = [
+#     Extension(
+#         "biterm.cbtm",
+#         ["biterm/cbtm.c"], #["biterm/cbtm.pyx"] #for compilation
+#         include_dirs=[numpy.get_include()]
+#     )
+# ]
 
 # pypi setup
 with open("README.md", "r") as fh:
@@ -18,7 +19,7 @@ with open("README.md", "r") as fh:
 setup(
     name="biterm",
     packages = find_packages(),
-    version="0.1.3",
+    version="0.2.0",
     author="markoarnauto",
     author_email="markus.tretzmueller@cortecs.at",
     description="Biterm Topic Model",
@@ -33,8 +34,8 @@ setup(
     install_requires=[
         'numpy',
         'tqdm',
-        'cython',
+        #'cython',
         'nltk'
     ],
-    ext_modules=cythonize(extensions)
+    #ext_modules=cythonize(extensions)
 )

@@ -1,6 +1,7 @@
 import numpy as np
 import pyLDAvis
-from biterm.cbtm import oBTM
+#from biterm.cbtm import oBTM
+from biterm.btm import oBTM
 from sklearn.feature_extraction.text import CountVectorizer
 from biterm.utility import vec_to_biterms, topic_summuary
 
