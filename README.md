@@ -28,7 +28,7 @@ Get the vocabulary and the biterms from the texts.
 ```
 Create a BTM and pass the biterms to train it.
 ```python
-    from biterm.cbtm import oBTM
+    from biterm.btm import oBTM
 
     btm = oBTM(num_topics=20, V=vocab)
     topics = btm.fit_transform(biterms, iterations=100)
