@@ -20,7 +20,7 @@ class oBTM:
 
     def _gibbs(self, iterations):
 
-        Z = np.zeros(len(self.B), dtype=np.int8)
+        Z = np.zeros(len(self.B), dtype=np.int16)
         n_wz = np.zeros((len(self.V), self.K), dtype=int)
         n_z = np.zeros(self.K, dtype=int)
 

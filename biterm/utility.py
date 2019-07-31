@@ -33,6 +33,7 @@ def topic_summuary(P_wz, X, V, M, verbose=True):
         res['coherence'][z] = C_z
         res['top_words'][z] = W_z
         if verbose: print('Topic {} | Coherence={:0.2f} | Top words= {}'.format(z, C_z, ' '.join(W_z)))
+    print ('Average topic coherence for the top words is {}'.format(sum(res['coherence'])/len(res['coherence'])))
     return res
 
 class Lexicon:
