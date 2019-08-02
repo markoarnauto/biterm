@@ -1,6 +1,7 @@
 import numpy as np
 from itertools import combinations, chain
 from tqdm import trange
+from .vose_sampler import VoseAlias
 
 
 class oBTM:
@@ -17,12 +18,27 @@ class oBTM:
         self.beta = np.full((len(self.V), self.K), beta)
         self.l = l
 
+    def compute_corpus_acceptance(k_topic,proposal_topic):
+        doc_proposal_1 = ((n_z[k_topic] + self.alpha[k_topic])*(n_wz[b_i[0],k_topic] + self.beta[b_i[0],k_topic])*(n_wz[b_i[1],k_topic] + self.beta[b_i[0],k_topic]))/
+                       (n_z[proposal_topic] + self.alpha[proposal_topic])*(n_wz[b_i[0],proposal_topic] + self.beta[b_i[0],proposal_topic])*(n_wz[b_i[1],proposal_topic] + self.beta[b_i[0],proposal_topic]) 
+        doc_proposal_2 = ((2 * n_z[proposal_topic] + self.beta[proposal_topic].sum(axis=0))**2)*(n_z[proposal_topic]+1+self.alpha[proposal_topic])/
+                        ((2 * n_z[k_topic] + self.beta[k_topic].sum(axis=0))**2)*(n_z[k_topic]+1+self.alpha[k_topic])
+        doc_proposal = doc_proposal_1*doc_proposal_2
+        return min(1,doc_proposal)
+
+    def compute_term_acceptance(wi,wj,s_topic,t_topic):
+        term_proposal_1 = (n_wz[wi,t_topic] + self.beta[wi,t_topic])*(n_wz[wj,t_topic] + self.beta[wj,t_topic])*((2 * n_z[s_topic] + self.beta[wi,s_topic])**2)/
+                          (n_wz[wi,s_topic] + self.beta[wi,s_topic])*(n_wz[wj,s_topic] + self.beta[wj,s_topic])*((2 * n_z[t_topic] + self.beta[wi,t_topic])**2)
+        term_proposal_2 = (n_z[t_topic] + self.alpha[t_topic])*(n_wz[wi,s_topic] + self.beta[wi,s_topic])*(2 * n_z[t_topic] + 1 + self.beta[wi,t_topic])/
+                            (n_z[s_topic] + self.alpha[s_topic])*(n_wz[wi,t_topic] + self.beta[wi,t_topic])*(2 * n_z[s_topic] + 1 + self.beta[wi,s_topic])
+        term_proposal = term_proposal*term_proposal_1
+        return min(1,term_proposal)
 
     def _gibbs(self, iterations):
-
         Z = np.zeros(len(self.B), dtype=np.int16)
         n_wz = np.zeros((len(self.V), self.K), dtype=int)
         n_z = np.zeros(self.K, dtype=int)
+        n_aw = np.zeros(self.V)
 
         for i, b_i in enumerate(self.B):
             topic = np.random.choice(self.K, 1)[0]
@@ -30,23 +46,40 @@ class oBTM:
             n_wz[b_i[1], topic] += 1
             n_z[topic] += 1
             Z[i] = topic
+            n_aw[b_i[0]] = VoseAlias(n_wz[b_i[0]])
+            n_aw[b_i[1]] = VoseAlias(n_wz[b_i[1]])
+        
+        #create alias table for each word
+        
+        n_aw[b_i[0]] = VA.n_wz[b_i[0]]
 
         for _ in trange(iterations):
             for i, b_i in enumerate(self.B):
                 n_wz[b_i[0], Z[i]] -= 1
                 n_wz[b_i[1], Z[i]] -= 1
                 n_z[Z[i]] -= 1
-                P_w0z = (n_wz[b_i[0], :] + self.beta[b_i[0], :]) / (2 * n_z + self.beta.sum(axis=0))
-                P_w1z = (n_wz[b_i[1], :] + self.beta[b_i[1], :]) / (2 * n_z + 1 + self.beta.sum(axis=0))
-                P_z = (n_z + self.alpha) * P_w0z * P_w1z
-                # P_z = (n_z + self.alpha) * ((n_wz[b_i[0], :] + self.beta[b_i[0], :]) * (n_wz[b_i[1], :] + self.beta[b_i[1], :]) /
-                #                            (((n_wz + self.beta).sum(axis=0) + 1) * (n_wz + self.beta).sum(axis=0)))  # todo check out
-                P_z = P_z / P_z.sum()
-                Z[i] = np.random.choice(self.K, 1, p=P_z)
-                n_wz[b_i[0], Z[i]] += 1
-                n_wz[b_i[1], Z[i]] += 1
-                n_z[Z[i]] += 1
-
+                proposal = np.random.randint(0,1)
+                k_topic = Z[i]
+                if proposal == 0:
+                    index = randomInt(0, len(self.V))
+                    proposal_topic = n_wz[b_i[0],index] #doesnt matter which biterm[0] or 1
+                    mh_acceptance = compute_corpus_acceptance(k_topic, proposal_topic)
+                else :
+                    proposal_topic = n_aw[b_i[0]].alias_generation()
+                    mh_acceptance = compute_term_acceptance(b_i[0],b_i[1],k_topic,proposal_topic)
+                mh_sample = randomFloat(0, 1)
+                if (mh_sample < mh_acceptance):
+                  # increment_count_matrices(d, w, k)  // reject proposal, revert to k
+                    Z[i] = k
+                    n_wz[b_i[0], Z[i]] += 1
+                    n_wz[b_i[1], Z[i]] += 1
+                    n_z[Z[i]] += 1
+                else :
+                    # increment_count_matrices(d, w, p)  // accept proposal
+                    Z[i] = p
+                    n_wz[b_i[0], Z[i]] += 1
+                    n_wz[b_i[1], Z[i]] += 1
+                    n_z[Z[i]] += 1
 
         return n_z, n_wz
 
