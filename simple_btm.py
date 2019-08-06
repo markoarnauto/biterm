@@ -24,9 +24,9 @@ if __name__ == "__main__":
     print("\n\n Train BTM ..")
     topics = btm.fit_transform(biterms, iterations=100)
 
-    print("\n\n Visualize Topics ..")
-    vis = pyLDAvis.prepare(btm.phi_wz.T, topics, np.count_nonzero(X, axis=1), vocab, np.sum(X, axis=0))
-    pyLDAvis.save_html(vis, './vis/simple_btm.html')
+    # print("\n\n Visualize Topics ..")
+    # vis = pyLDAvis.prepare(btm.phi_wz.T, topics, np.count_nonzero(X, axis=1), vocab, np.sum(X, axis=0))
+    # pyLDAvis.save_html(vis, './vis/simple_btm.html')
 
     print("\n\n Topic coherence ..")
     topic_summuary(btm.phi_wz.T, X, vocab, 10)
