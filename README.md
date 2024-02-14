@@ -1,7 +1,7 @@
 # Biterm Topic Model
 
 This is a simple Python implementation of the awesome
-[Biterm Topic Model](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.402.4032&rep=rep1&type=pdf).
+[Biterm Topic Model](https://xiaohuiyan.github.io/paper/BTM-WWW13.pdf).
 This model is accurate in short text classification.
 It explicitly models the word co-occurrence patterns in the whole corpus to solve the problem of sparse word co-occurrence at document-level.
 
