@@ -25,12 +25,12 @@ if __name__ == "__main__":
     print("\n\n Train Online BTM ..")
     for i in range(0, len(biterms), 100): # prozess chunk of 200 texts
         biterms_chunk = biterms[i:i + 100]
-        btm.fit(biterms_chunk, iterations=50)
+        btm.fit(biterms_chunk, iterations=100)
     topics = btm.transform(biterms)
 
-    print("\n\n Visualize Topics ..")
-    vis = pyLDAvis.prepare(btm.phi_wz.T, topics, np.count_nonzero(X, axis=1), vocab, np.sum(X, axis=0))
-    pyLDAvis.save_html(vis, './vis/online_btm.html')
+    # print("\n\n Visualize Topics ..")
+    # vis = pyLDAvis.prepare(btm.phi_wz.T, topics, np.count_nonzero(X, axis=1), vocab, np.sum(X, axis=0))
+    # pyLDAvis.save_html(vis, './vis/online_btm.html')
 
     print("\n\n Topic coherence ..")
     topic_summuary(btm.phi_wz.T, X, vocab, 10)
